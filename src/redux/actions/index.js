@@ -1,5 +1,6 @@
 // ACTIONS TYPES
 export const SUBMIT_USER_INFO = 'SUBMIT_USER_INFO';
+export const ADD_EXPENSE_INFO = 'ADD_EXPENSE_INFO';
 
 // ACTIONS CREATORS
 export const submitUserInfo = (user) => ({
@@ -7,7 +8,7 @@ export const submitUserInfo = (user) => ({
   payload: user,
 });
 
-// export const submitWalletInfo = (wallet) => ({
-//   type: SUBMIT_USER_INFO,
-//   payload: wallet,
-// });
+export const addWalletInfo = (wallet) => ({
+  type: ADD_EXPENSE_INFO,
+  payload: wallet,
+});
