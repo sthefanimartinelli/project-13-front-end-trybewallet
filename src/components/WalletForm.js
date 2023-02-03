@@ -1,37 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addWalletInfo } from '../redux/actions';
+import { addCurrencyInfo, fetchCurrencies } from '../redux/actions';
 
 class WalletForm extends Component {
-  state = {
-    expense: 0,
+  INITIAL_STATE = {
+    id: 0,
+    value: '',
     description: '',
-    methodInput: 'Dinheiro',
-    tagInput: 'Alimentação',
-    currencySelected: 'USD',
+    method: 'Dinheiro',
+    tag: 'Alimentação',
+    currency: 'USD',
   };
+
+  state = this.INITIAL_STATE;
 
   async componentDidMount() {
     const { dispatch } = this.props;
     const currenciesResponse = await fetch('https://economia.awesomeapi.com.br/json/all');
     const currenciesData = await currenciesResponse.json();
     const currenciesList = Object.keys(currenciesData);
-    const currenciesListFiltered = currenciesList
+    const currencies = currenciesList
       .filter((currency) => currency !== 'USDT');
-    // console.log(currenciesListFiltered);
-    dispatch(addWalletInfo({ currencies: currenciesListFiltered }));
-
-    // fetch('https://economia.awesomeapi.com.br/json/all')
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     const currenciesList = Object.keys(data);
-    //     const currenciesListFiltered = currenciesList
-    //       .filter((currency) => currency !== 'USDT');
-    //     console.log(currenciesListFiltered);
-
-    // this.setState({ currencies: data.results });
-    // });
+    dispatch(addCurrencyInfo({ currencies }));
   }
 
   handleChange = ({ target }) => {
@@ -41,19 +32,36 @@ class WalletForm extends Component {
     });
   };
 
+  // updateState = () => {
+  //   this.setState(INITIAL_STATE);
+  // };
+
+  submitFormInfo = (event) => {
+    event.preventDefault();
+    const { dispatch } = this.props;
+    const { id } = this.state;
+    dispatch(fetchCurrencies(this.state));
+    this.setState({
+      id: id + 1,
+      value: '',
+      description: '',
+    });
+  };
+
   render() {
     const { currencies } = this.props;
-    console.log(currencies);
-    const { expense, description, currencySelected, methodInput, tagInput } = this.state;
+    const { value, description, currency, method, tag } = this.state;
     return (
       <>
         <div>WalletForm</div>
-        <form>
+        <form
+          onSubmit={ this.submitFormInfo }
+        >
           <input
             type="text"
             data-testid="value-input"
-            name="expense"
-            value={ expense }
+            name="value"
+            value={ value }
             onChange={ this.handleChange }
             required
           />
@@ -67,16 +75,18 @@ class WalletForm extends Component {
           />
           <select
             data-testid="currency-input"
-            value={ currencySelected }
+            name="currency"
+            value={ currency }
             onChange={ this.handleChange }
           >
-            { currencies.map((currency) => (
-              <option key={ currency } value={ currency }>{currency}</option>
+            { currencies.map((data) => (
+              <option key={ data } value={ data }>{data}</option>
             )) }
           </select>
           <select
             data-testid="method-input"
-            value={ methodInput }
+            name="method"
+            value={ method }
             onChange={ this.handleChange }
           >
             <option value="Dinheiro">Dinheiro</option>
@@ -85,7 +95,8 @@ class WalletForm extends Component {
           </select>
           <select
             data-testid="tag-input"
-            value={ tagInput }
+            name="tag"
+            value={ tag }
             onChange={ this.handleChange }
           >
             <option value="Alimentação">Alimentação</option>
@@ -94,6 +105,11 @@ class WalletForm extends Component {
             <option value="Transporte">Transporte</option>
             <option value="Saúde">Saúde</option>
           </select>
+          <button
+            type="submit"
+          >
+            Adicionar Despesa
+          </button>
         </form>
       </>
     );
@@ -107,8 +123,8 @@ WalletForm.propTypes = {
   }),
 }.isRequired;
 
-const mapStateToProps = (state) => ({
-  currencies: state.wallet.currencies,
+const mapStateToProps = ({ wallet }) => ({
+  currencies: wallet.currencies,
 });
 
 export default connect(mapStateToProps)(WalletForm);
