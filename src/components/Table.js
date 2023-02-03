@@ -1,8 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { setStateAfterEdit } from '../redux/actions/index';
 
 class Table extends Component {
+  deleteExpense = ({ target }) => {
+    const { dispatch, expenses } = this.props;
+    const newExpensesList = expenses.filter((expense) => expense.id !== +target.id);
+    dispatch(setStateAfterEdit(newExpensesList));
+  };
+
   render() {
     const { expenses } = this.props;
     return (
@@ -27,9 +34,9 @@ class Table extends Component {
               const {
                 id, value, description, currency, method, tag, exchangeRates,
               } = expense;
-              const cambio = Number(exchangeRates[currency].ask);
-              const valueConverted = Number(value) * cambio;
-              const valueStringToNumber = Number(value);
+              const cambio = parseFloat(exchangeRates[currency].ask);
+              const valueConverted = parseFloat(value) * cambio;
+              const valueStringToNumber = parseFloat(value);
               return (
                 <tr key={ id }>
                   <td>{ description }</td>
@@ -40,7 +47,16 @@ class Table extends Component {
                   <td>{ cambio.toFixed(2) }</td>
                   <td>{ valueConverted.toFixed(2) }</td>
                   <td>Real</td>
-                  <td>Editar/Excluir</td>
+                  <td>
+                    <button
+                      id={ id }
+                      data-testid="delete-btn"
+                      onClick={ this.deleteExpense }
+                      type="button"
+                    >
+                      Excluir
+                    </button>
+                  </td>
                 </tr>
               );
             })}

@@ -6,10 +6,11 @@ class Header extends Component {
   totalSum = () => {
     const { expenses } = this.props;
     const totalSum = expenses.reduce((acc, curr) => {
-      const eachExpenseValue = curr.value * curr.exchangeRates[curr.currency].ask;
-      const sum = Number(eachExpenseValue) + parseFloat(acc);
+      const eachExpenseValue = parseFloat(curr.value)
+        * parseFloat(curr.exchangeRates[curr.currency].ask);
+      const sum = eachExpenseValue + parseFloat(acc);
       return sum.toFixed(2);
-    }, 0);
+    }, '0.00');
     return totalSum;
   };
 

@@ -5,7 +5,7 @@ import { addCurrencyInfo, fetchCurrencies } from '../redux/actions';
 
 class WalletForm extends Component {
   INITIAL_STATE = {
-    id: 0,
+    id: 0.00,
     value: '',
     description: '',
     method: 'Dinheiro',
