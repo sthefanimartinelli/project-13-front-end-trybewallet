@@ -4,6 +4,7 @@ export const ADD_CURRENCY_INFO = 'ADD_CURRENCY_INFO';
 export const ADD_MOMENT_CURRENCY_INFO = 'ADD_MOMENT_CURRENCY_INFO';
 export const ADD_EXPENSE_INFO = 'ADD_EXPENSE_INFO';
 export const SET_STATE_AFTER_EDIT = 'SET_STATE_AFTER_EDIT';
+export const START_EDITING_EXPENSE = 'START_EDITING_EXPENSE';
 
 // ACTIONS CREATORS
 export const submitUserInfo = (user) => ({
@@ -38,4 +39,12 @@ export const fetchCurrencies = (state) => async (dispatch) => {
 export const setStateAfterEdit = (newExpensesList) => ({
   type: SET_STATE_AFTER_EDIT,
   payload: newExpensesList,
+});
+
+export const startEditingExpense = ({ editor, idToEdit }) => ({
+  type: START_EDITING_EXPENSE,
+  payload: {
+    editor,
+    idToEdit,
+  },
 });

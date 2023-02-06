@@ -5,7 +5,8 @@ import { addCurrencyInfo, fetchCurrencies } from '../redux/actions';
 
 class WalletForm extends Component {
   INITIAL_STATE = {
-    id: 0.00,
+    // isEditing: false,
+    id: 0,
     value: '',
     description: '',
     method: 'Dinheiro',
@@ -32,10 +33,6 @@ class WalletForm extends Component {
     });
   };
 
-  // updateState = () => {
-  //   this.setState(INITIAL_STATE);
-  // };
-
   submitFormInfo = (event) => {
     event.preventDefault();
     const { dispatch } = this.props;
@@ -48,11 +45,24 @@ class WalletForm extends Component {
     });
   };
 
+  handleEdit = () => {
+    const { value, description, currency, method, tag } = this.props;
+    this.setState({
+      isEditing: false,
+      value,
+      description,
+      currency,
+      method,
+      tag,
+    });
+  };
+
   render() {
-    const { currencies } = this.props;
+    const { currencies, isEditing } = this.props;
     const { value, description, currency, method, tag } = this.state;
     return (
       <>
+        { isEditing && this.handleEdit }
         <div>WalletForm</div>
         <form
           onSubmit={ this.submitFormInfo }
@@ -105,11 +115,9 @@ class WalletForm extends Component {
             <option value="Transporte">Transporte</option>
             <option value="Saúde">Saúde</option>
           </select>
-          <button
-            type="submit"
-          >
-            Adicionar Despesa
-          </button>
+          { isEditing
+            ? <button type="submit">Editar Despesa</button>
+            : <button type="submit">Adicionar Despesa</button>}
         </form>
       </>
     );
@@ -125,6 +133,14 @@ WalletForm.propTypes = {
 
 const mapStateToProps = ({ wallet }) => ({
   currencies: wallet.currencies,
+  isEditing: wallet.isEditing,
+  // id: wallet.id,
+  value: wallet.value,
+  description: wallet.description,
+  currency: wallet.currency,
+  method: wallet.method,
+  tag: wallet.tag,
+  // exchangeRates: wallet.exchangeRates,
 });
 
 export default connect(mapStateToProps)(WalletForm);

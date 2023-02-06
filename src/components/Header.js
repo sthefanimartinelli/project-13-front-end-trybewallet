@@ -26,7 +26,7 @@ class Header extends Component {
           { email }
         </h3>
         <h3
-          name="despesaTotal"
+          name="despesa-total"
           data-testid="total-field"
         >
           { this.totalSum() }
