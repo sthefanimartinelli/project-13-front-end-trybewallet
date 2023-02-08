@@ -1,37 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setStateAfterEdit, startEditingExpense } from '../redux/actions/index';
+import { setStateAfterDelete, startEditingExpense } from '../redux/actions/index';
 
 class Table extends Component {
   deleteExpense = ({ target }) => {
     const { dispatch, expenses } = this.props;
     const newExpensesList = expenses.filter((expense) => expense.id !== +target.id);
-    dispatch(setStateAfterEdit(newExpensesList));
+    dispatch(setStateAfterDelete(newExpensesList));
   };
 
   startEditingExpense = ({ target }) => {
     const { dispatch } = this.props;
     const { id } = target;
-    // const expenseInfo = expenses.filter((expense) => expense.id === id);
-    // console.log(expenseInfo);
-    // const expenseEditingInfo = ({
-    //   isEditing: true,
-    //   currEditingExpense: {
-    //     // id,
-    //     value: expenseInfo.value,
-    //     description: expenseInfo.description,
-    //     currency: expenseInfo.currency,
-    //     method: expenseInfo.method,
-    //     tag: expenseInfo.tag,
-    //     exchangeRates: expenseInfo.exchangeRates,
-    //   },
-    // });
-    const objEditor = ({
+    const editingInfo = ({
       editor: true,
-      idToEdit: id,
+      idToEdit: Number(id),
     });
-    dispatch(startEditingExpense(objEditor));
+    dispatch(startEditingExpense(editingInfo));
   };
 
   render() {

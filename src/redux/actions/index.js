@@ -5,6 +5,7 @@ export const ADD_MOMENT_CURRENCY_INFO = 'ADD_MOMENT_CURRENCY_INFO';
 export const ADD_EXPENSE_INFO = 'ADD_EXPENSE_INFO';
 export const SET_STATE_AFTER_EDIT = 'SET_STATE_AFTER_EDIT';
 export const START_EDITING_EXPENSE = 'START_EDITING_EXPENSE';
+export const SET_STATE_AFTER_DELETE = 'SET_STATE_AFTER_DELETE';
 
 // ACTIONS CREATORS
 export const submitUserInfo = (user) => ({
@@ -36,15 +37,26 @@ export const fetchCurrencies = (state) => async (dispatch) => {
   }
 };
 
-export const setStateAfterEdit = (newExpensesList) => ({
+export const setStateAfterEdit = (editedObjInfo) => ({
   type: SET_STATE_AFTER_EDIT,
-  payload: newExpensesList,
+  payload: {
+    value: editedObjInfo.value,
+    description: editedObjInfo.description,
+    method: editedObjInfo.method,
+    tag: editedObjInfo.tag,
+    currency: editedObjInfo.currency,
+  },
 });
 
-export const startEditingExpense = ({ editor, idToEdit }) => ({
+export const startEditingExpense = (editingInfo) => ({
   type: START_EDITING_EXPENSE,
   payload: {
-    editor,
-    idToEdit,
+    editor: editingInfo.editor,
+    idToEdit: editingInfo.idToEdit,
   },
+});
+
+export const setStateAfterDelete = (newExpensesList) => ({
+  type: SET_STATE_AFTER_DELETE,
+  payload: newExpensesList,
 });

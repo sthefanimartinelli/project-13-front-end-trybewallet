@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 class Header extends Component {
+  // feito na monitoria summer
   totalSum = () => {
     const { expenses } = this.props;
     const totalSum = expenses.reduce((acc, curr) => {

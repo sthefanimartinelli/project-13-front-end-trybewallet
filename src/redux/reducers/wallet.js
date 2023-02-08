@@ -4,6 +4,7 @@ import {
   ADD_CURRENCY_INFO,
   SET_STATE_AFTER_EDIT,
   START_EDITING_EXPENSE,
+  SET_STATE_AFTER_DELETE,
 } from '../actions';
 
 const INITIAL_STATE = {
@@ -19,8 +20,26 @@ const walletReducer = (state = INITIAL_STATE, action) => {
     return { ...state, ...action.payload };
   case ADD_EXPENSE_INFO:
     return { ...state, expenses: [...state.expenses, action.payload] };
-  case SET_STATE_AFTER_EDIT:
+  case SET_STATE_AFTER_DELETE:
     return { ...state, expenses: action.payload };
+  case SET_STATE_AFTER_EDIT:
+    return {
+      ...state,
+      expenses: state.expenses.reduce((acc, curr) => {
+        if (curr.id === state.idToEdit) {
+          return [...acc,
+            { ...curr,
+              value: action.payload.value,
+              description: action.payload.description,
+              method: action.payload.method,
+              tag: action.payload.tag,
+              currency: action.payload.currency,
+            }];
+        }
+        return [...acc, curr];
+      }, []),
+      editor: false,
+    };
   case START_EDITING_EXPENSE:
     return {
       ...state,

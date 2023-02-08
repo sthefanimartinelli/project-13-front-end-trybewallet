@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addCurrencyInfo, fetchCurrencies } from '../redux/actions';
+import { addCurrencyInfo, fetchCurrencies, setStateAfterEdit } from '../redux/actions';
 
 class WalletForm extends Component {
   INITIAL_STATE = {
@@ -33,8 +33,17 @@ class WalletForm extends Component {
     });
   };
 
-  submitFormInfo = (event) => {
+  handleForm = (event) => {
     event.preventDefault();
+    const { editor } = this.props;
+    if (editor) {
+      this.handleEdit();
+    } else {
+      this.submitFormInfo();
+    }
+  };
+
+  submitFormInfo = () => {
     const { dispatch } = this.props;
     const { id } = this.state;
     dispatch(fetchCurrencies(this.state));
@@ -46,26 +55,24 @@ class WalletForm extends Component {
   };
 
   handleEdit = () => {
-    const { value, description, currency, method, tag } = this.props;
+    const { value, description, method, tag, currency } = this.state;
+    const { dispatch } = this.props;
+    const editedObjInfo = ({ value, description, method, tag, currency });
+    dispatch(setStateAfterEdit(editedObjInfo));
     this.setState({
-      isEditing: false,
-      value,
-      description,
-      currency,
-      method,
-      tag,
+      value: '',
+      description: '',
     });
   };
 
   render() {
-    const { currencies, isEditing } = this.props;
+    const { currencies, editor } = this.props;
     const { value, description, currency, method, tag } = this.state;
     return (
       <>
-        { isEditing && this.handleEdit }
         <div>WalletForm</div>
         <form
-          onSubmit={ this.submitFormInfo }
+          onSubmit={ this.handleForm }
         >
           <input
             type="text"
@@ -115,7 +122,7 @@ class WalletForm extends Component {
             <option value="Transporte">Transporte</option>
             <option value="Saúde">Saúde</option>
           </select>
-          { isEditing
+          { editor
             ? <button type="submit">Editar Despesa</button>
             : <button type="submit">Adicionar Despesa</button>}
         </form>
@@ -133,14 +140,8 @@ WalletForm.propTypes = {
 
 const mapStateToProps = ({ wallet }) => ({
   currencies: wallet.currencies,
-  isEditing: wallet.isEditing,
-  // id: wallet.id,
-  value: wallet.value,
-  description: wallet.description,
-  currency: wallet.currency,
-  method: wallet.method,
-  tag: wallet.tag,
-  // exchangeRates: wallet.exchangeRates,
+  editor: wallet.editor,
+  idToEdit: wallet.idToEdit,
 });
 
 export default connect(mapStateToProps)(WalletForm);
